@@ -10,40 +10,35 @@ func main() {
 	l := machine.LED
 	l.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
-	c1 := setupCol(machine.GP4)
-	c2 := setupCol(machine.GP5)
-	c3 := setupCol(machine.GP6)
-	c4 := setupCol(machine.GP7)
-	c5 := setupCol(machine.GP8)
-	c6 := setupCol(machine.GP9)
+	cols := setuptPins(machine.PinInputPulldown,
+		machine.GP4,
+		machine.GP5,
+		machine.GP6,
+		machine.GP7,
+		machine.GP8,
+		machine.GP9,
 
-	c7 := setupCol(machine.GP15)
-	c8 := setupCol(machine.GP14)
-	c9 := setupCol(machine.GP13)
-	c10 := setupCol(machine.GP12)
-	c11 := setupCol(machine.GP11)
-	c12 := setupCol(machine.GP10)
-	cols := []machine.Pin{
-		c1, c2, c3, c4, c5, c6,
-		c7, c8, c9, c10, c11, c12,
-	}
+		machine.GP15,
+		machine.GP14,
+		machine.GP13,
+		machine.GP12,
+		machine.GP11,
+		machine.GP10,
+	)
 
-	r1 := setupRow(machine.GP21)
-	r2 := setupRow(machine.GP22)
-	r3 := setupRow(machine.GP26)
-	r4 := setupRow(machine.GP27)
-	r5 := setupRow(machine.GP28)
+	rows := setuptPins(machine.PinOutput,
+		machine.GP21,
+		machine.GP22,
+		machine.GP26,
+		machine.GP27,
+		machine.GP28,
 
-	r6 := setupRow(machine.GP16)
-	r7 := setupRow(machine.GP17)
-	r8 := setupRow(machine.GP18)
-	r9 := setupRow(machine.GP19)
-	r10 := setupRow(machine.GP20)
-
-	rows := []machine.Pin{
-		r1, r2, r3, r4, r5,
-		r6, r7, r8, r9, r10,
-	}
+		machine.GP16,
+		machine.GP17,
+		machine.GP18,
+		machine.GP19,
+		machine.GP20,
+	)
 
 	kb := keyboard.New(l)
 	for {
@@ -60,7 +55,7 @@ func main() {
 		}
 
 		kb.PressedKeys(pressed)
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(7 * time.Millisecond)
 	}
 }
 
@@ -74,14 +69,10 @@ func enableRow(rows []machine.Pin, r int) {
 	}
 }
 
-func setupCol(pin machine.Pin) machine.Pin {
-	pin.Configure(machine.PinConfig{Mode: machine.PinInputPulldown})
+func setuptPins(mode machine.PinMode, pins ...machine.Pin) []machine.Pin {
+	for i := range pins {
+		pins[i].Configure(machine.PinConfig{Mode: mode})
+	}
 
-	return pin
-}
-
-func setupRow(pin machine.Pin) machine.Pin {
-	pin.Configure(machine.PinConfig{Mode: machine.PinOutput})
-
-	return pin
+	return pins
 }
