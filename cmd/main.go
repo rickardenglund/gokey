@@ -1,38 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"gokey/keyboard"
 	"machine"
 	"time"
 )
 
-func maina() {
-	i := 0
-	for {
-		fmt.Printf("hejsan %d\r\n", i)
-		i++
-		time.Sleep(time.Millisecond)
-	}
-}
-
 func main() {
 	l := machine.LED
 	l.Configure(machine.PinConfig{Mode: machine.PinOutput})
-
-	defer func() {
-		e := recover()
-		fmt.Printf("panic: %v\r\n", e)
-
-		on := false
-		for {
-			l.Set(on)
-			on = !on
-			time.Sleep(300 * time.Millisecond)
-
-		}
-
-	}()
 
 	c1 := setupCol(machine.GP4)
 	c2 := setupCol(machine.GP5)
@@ -68,9 +44,8 @@ func main() {
 		r1, r2, r3, r4, r5,
 		r6, r7, r8, r9, r10,
 	}
-	fmt.Printf("rpws: %v\r\n", rows)
 
-	kb := keyboard.New()
+	kb := keyboard.New(l)
 	for {
 		pressed := map[keyboard.Coordinates]bool{}
 		for r := range rows {
@@ -85,7 +60,7 @@ func main() {
 		}
 
 		kb.PressedKeys(pressed)
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(5 * time.Millisecond)
 	}
 }
 

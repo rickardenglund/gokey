@@ -2,6 +2,7 @@ package keyboard
 
 import (
 	"fmt"
+	"machine"
 	"machine/usb/hid/keyboard"
 )
 
@@ -13,12 +14,13 @@ type Keyboard interface {
 	PressedKeys(map[Coordinates]bool)
 }
 
-func New() Keyboard {
+func New(ledPin machine.Pin) Keyboard {
 	hidKeyboard := keyboard.New()
 
 	return &kb{
 		keysDown: map[Coordinates]bool{},
 		hk:       hidKeyboard,
+		led:      ledPin,
 	}
 }
 
@@ -29,12 +31,16 @@ type kbi interface {
 type kb struct {
 	keysDown map[Coordinates]bool
 	hk       kbi
+	led      machine.Pin
 }
 
 func (k *kb) PressedKeys(cs map[Coordinates]bool) {
 	l := layer1
 	if cs[Coordinates{Row: 4, Col: 5}] {
 		l = layer2
+		k.led.High()
+	} else {
+		k.led.Low()
 	}
 
 	for c := range cs {
