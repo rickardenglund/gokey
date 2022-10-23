@@ -32,45 +32,41 @@ type kb struct {
 }
 
 func (k *kb) PressedKeys(cs map[Coordinates]bool) {
-	printed := false
+	l := layer1
+	if cs[Coordinates{Row: 4, Col: 5}] {
+		l = layer2
+	}
+
 	for c := range cs {
 		if !k.keysDown[c] {
-			// fmt.Printf("D(%d,%d) ", c.Row, c.Col)
-			k.hk.Down(getCode(c))
-			printed = true
+			k.hk.Down(getCode(l, c))
 		}
 	}
 
 	for c := range k.keysDown {
 		if !cs[c] {
-			fmt.Printf("U(%d, %d) ", c.Row, c.Col)
-			k.hk.Up(getCode(c))
-			// printed = true
+			k.hk.Up(getCode(l, c))
 		}
 	}
 
 	k.keysDown = cs
-
-	if printed {
-		fmt.Print("\r\n\r\n")
-	}
 }
 
-func getCode(c Coordinates) keyboard.Keycode {
+func getCode(l []keyboard.Keycode, c Coordinates) keyboard.Keycode {
 	if c.Col > 5 {
 		c.Col -= 6
 	}
 	i := c.Row*6 + c.Col
-	if i >= len(keymap) {
-		fmt.Printf("c: %d >= %d", i, len(keymap))
+	if i >= len(l) {
+		fmt.Printf("c: %d >= %d", i, len(l))
 
 		return keyboard.Keycode(0)
 	}
 
-	return keymap[i]
+	return l[i]
 }
 
-var keymap = []keyboard.Keycode{
+var layer1 = []keyboard.Keycode{
 	keyboard.KeyTilde, keyboard.Key1, keyboard.Key2, keyboard.Key3, keyboard.Key4, keyboard.Key5,
 	keyboard.KeyTab, keyboard.KeyQ, keyboard.KeyW, keyboard.KeyE, keyboard.KeyR, keyboard.KeyT,
 	keyboard.KeyEsc, keyboard.KeyA, keyboard.KeyS, keyboard.KeyD, keyboard.KeyF, keyboard.KeyG,
@@ -82,4 +78,18 @@ var keymap = []keyboard.Keycode{
 	keyboard.KeyH, keyboard.KeyJ, keyboard.KeyK, keyboard.KeyL, keyboard.KeySemicolon, keyboard.KeyQuote,
 	keyboard.KeyN, keyboard.KeyM, keyboard.KeyComma, keyboard.KeyPeriod, keyboard.KeySlash, keyboard.KeyRightShift,
 	keyboard.KeyModifierRightCtrl, keyboard.KeyBackspace, keyboard.KeySpace, keyboard.KeyLeftBrace, keyboard.KeyRightBrace, keyboard.KeyBackslash,
+}
+
+var layer2 = []keyboard.Keycode{
+	keyboard.KeyF1, keyboard.KeyF2, keyboard.KeyF3, keyboard.KeyF4, keyboard.KeyF5, keyboard.KeyF6,
+	keyboard.KeyTab, keyboard.KeyQ, keyboard.KeyW, keyboard.KeyE, keyboard.KeyR, keyboard.KeyT,
+	keyboard.KeyEsc, keyboard.KeyA, keyboard.KeyS, keyboard.KeyD, keyboard.KeyF, keyboard.KeyG,
+	keyboard.KeyLeftShift, keyboard.KeyZ, keyboard.KeyX, keyboard.KeyC, keyboard.KeyV, keyboard.KeyB,
+	keyboard.KeyLeftCtrl, keyboard.KeyLeftAlt, keyboard.KeyLeftGUI, keyboard.KeySpace, keyboard.KeyReturn, keyboard.Keycode(0),
+
+	keyboard.KeyF7, keyboard.KeyF8, keyboard.KeyF9, keyboard.KeyF10, keyboard.KeyF11, keyboard.KeyF12,
+	keyboard.KeyY, keyboard.KeyU, keyboard.KeyI, keyboard.KeyO, keyboard.KeyP, keyboard.KeyEqual,
+	keyboard.KeyLeft, keyboard.KeyDown, keyboard.KeyUp, keyboard.KeyRight, keyboard.KeySemicolon, keyboard.KeyQuote,
+	keyboard.KeyN, keyboard.KeyM, keyboard.KeyComma, keyboard.KeyPeriod, keyboard.KeySlash, keyboard.KeyRightShift,
+	keyboard.Keycode(0), keyboard.KeyBackspace, keyboard.KeyLeftGUI, keyboard.KeyLeftBrace, keyboard.KeyRightBrace, keyboard.KeyBackslash,
 }
