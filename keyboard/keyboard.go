@@ -18,9 +18,9 @@ func New(ledPin machine.Pin) Keyboard {
 	hidKeyboard := keyboard.New()
 
 	return &kb{
-		keysDown: map[Coordinates]bool{},
-		hk:       hidKeyboard,
-		led:      ledPin,
+		activeCodes: map[keyboard.Keycode]bool{},
+		hk:          hidKeyboard,
+		led:         ledPin,
 	}
 }
 
@@ -28,10 +28,11 @@ type kbi interface {
 	Down(keyboard.Keycode) error
 	Up(keyboard.Keycode) error
 }
+
 type kb struct {
-	keysDown map[Coordinates]bool
-	hk       kbi
-	led      machine.Pin
+	activeCodes map[keyboard.Keycode]bool
+	hk          kbi
+	led         machine.Pin
 }
 
 func (k *kb) PressedKeys(cs map[Coordinates]bool) {
@@ -44,17 +45,24 @@ func (k *kb) PressedKeys(cs map[Coordinates]bool) {
 		k.led.Low()
 	}
 
+	desiredKeycodes := map[keyboard.Keycode]bool{}
 	for c := range cs {
-		if !k.keysDown[c] {
-			k.hk.Down(keymap.GetCode(l, c.Row, c.Col))
+		code := keymap.GetCode(l, c.Row, c.Col)
+		desiredKeycodes[code] = true
+	}
+
+	for activeCode := range k.activeCodes {
+		if !desiredKeycodes[activeCode] {
+			k.hk.Up(activeCode)
+		}
+
+	}
+
+	for code := range desiredKeycodes {
+		if !k.activeCodes[code] {
+			k.hk.Down(code)
 		}
 	}
 
-	for c := range k.keysDown {
-		if !cs[c] {
-			k.hk.Up(keymap.GetCode(l, c.Row, c.Col))
-		}
-	}
-
-	k.keysDown = cs
+	k.activeCodes = desiredKeycodes
 }

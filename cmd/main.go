@@ -60,7 +60,7 @@ func main() {
 		}
 
 		kb.PressedKeys(pressed)
-		time.Sleep(5 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
