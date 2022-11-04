@@ -17,7 +17,7 @@ type kb struct {
 func (k *kb) PressedKeys(cs map[keyboard.Coordinates]bool) {
 	for c := range cs {
 		if !k.keysDown[c] {
-			fmt.Printf("D(%d,%d) ", c.Row, c.Col)
+			fmt.Printf("D(%d,%d) \r\n", c.Row, c.Col)
 		}
 	}
 

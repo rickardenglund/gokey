@@ -2,6 +2,8 @@ package main
 
 import (
 	"gokey/keyboard"
+	"gokey/keyboard/keymapv1"
+	//"gokey/keyboard/echo"
 	"machine"
 	"time"
 )
@@ -11,36 +13,39 @@ func main() {
 	l.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
 	cols := setuptPins(machine.PinInputPulldown,
-		machine.GP4,
 		machine.GP5,
+		machine.GP15, // 1
 		machine.GP6,
 		machine.GP7,
-		machine.GP8,
+		machine.GP8, // 5
 		machine.GP9,
+		machine.GP28,
 
-		machine.GP15,
-		machine.GP14,
-		machine.GP13,
-		machine.GP12,
-		machine.GP11,
-		machine.GP10,
+		machine.GP21,
+		machine.GP20,
+		machine.GP19,
+		machine.GP18,
+		machine.GP22,
+		machine.GP17,
+		machine.GP16,
 	)
 
 	rows := setuptPins(machine.PinOutput,
-		machine.GP21,
-		machine.GP22,
 		machine.GP26,
 		machine.GP27,
-		machine.GP28,
+		machine.GP4,
+		machine.GP3,
+		machine.GP2,
 
-		machine.GP16,
-		machine.GP17,
-		machine.GP18,
-		machine.GP19,
-		machine.GP20,
+		machine.GP10,
+		machine.GP11,
+		machine.GP12,
+		machine.GP13,
+		machine.GP14,
 	)
 
-	kb := keyboard.New(l)
+	kb := keyboard.New(l, keymapv1.New())
+	//kb := echo.New()
 	for {
 		pressed := map[keyboard.Coordinates]bool{}
 		for r := range rows {

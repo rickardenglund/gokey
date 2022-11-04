@@ -1,7 +1,6 @@
 package keyboard
 
 import (
-	"gokey/keyboard/keymap"
 	"machine"
 	"machine/usb/hid/keyboard"
 )
@@ -14,13 +13,19 @@ type Keyboard interface {
 	PressedKeys(map[Coordinates]bool)
 }
 
-func New(ledPin machine.Pin) Keyboard {
+type Keymap interface {
+	GetLayerKey() (int, int)
+	GetCode(layer, row, col int) keyboard.Keycode
+}
+
+func New(ledPin machine.Pin, keymap Keymap) Keyboard {
 	hidKeyboard := keyboard.New()
 
 	return &kb{
 		activeCodes: map[keyboard.Keycode]bool{},
 		hk:          hidKeyboard,
 		led:         ledPin,
+		keymap:      keymap,
 	}
 }
 
@@ -33,12 +38,14 @@ type kb struct {
 	activeCodes map[keyboard.Keycode]bool
 	hk          kbi
 	led         machine.Pin
+	keymap      Keymap
 }
 
 func (k *kb) PressedKeys(cs map[Coordinates]bool) {
 	l := 1
 
-	if cs[Coordinates{Row: 4, Col: 5}] {
+	lCol, lRow := k.keymap.GetLayerKey()
+	if cs[Coordinates{Row: lRow, Col: lCol}] {
 		l = 2
 		k.led.High()
 	} else {
@@ -47,7 +54,7 @@ func (k *kb) PressedKeys(cs map[Coordinates]bool) {
 
 	desiredKeycodes := map[keyboard.Keycode]bool{}
 	for c := range cs {
-		code := keymap.GetCode(l, c.Row, c.Col)
+		code := k.keymap.GetCode(l, c.Row, c.Col)
 		desiredKeycodes[code] = true
 	}
 

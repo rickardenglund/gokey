@@ -5,7 +5,17 @@ import (
 	"machine/usb/hid/keyboard"
 )
 
-func GetCode(layer, row, col int) keyboard.Keycode {
+type Keymap struct{}
+
+func New() Keymap {
+	return Keymap{}
+}
+
+func (k Keymap) GetLayerKey() (int, int) {
+	return 6, 4
+}
+
+func (k Keymap) GetCode(layer, row, col int) keyboard.Keycode {
 	l := layer1
 	switch layer {
 	case 1:
