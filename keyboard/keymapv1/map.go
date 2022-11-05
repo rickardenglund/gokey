@@ -61,7 +61,7 @@ var layer2 = []keyboard.Keycode{
 	keyboard.KeyLeftShift, keyboard.KeyZ, keyboard.KeyX, keyboard.KeyC, keyboard.KeyV, keyboard.KeyB, keyboard.Keycode(0),
 	keyboard.KeyLeftCtrl, keyboard.Keycode(0), keyboard.KeyLeftAlt, keyboard.KeyLeftGUI, keyboard.KeySpace, keyboard.KeyReturn, keyboard.Keycode(0),
 
-	keyboard.Keycode(0), keyboard.KeyF7, keyboard.KeyF7, keyboard.KeyF8, keyboard.KeyF9, keyboard.KeyF10, keyboard.KeyF11, keyboard.KeyF12,
+	keyboard.Keycode(0), keyboard.KeyF7, keyboard.KeyF8, keyboard.KeyF9, keyboard.KeyF10, keyboard.KeyF11, keyboard.KeyF12,
 	keyboard.Keycode(0), keyboard.KeyY, keyboard.KeyU, keyboard.KeyI, keyboard.KeyO, keyboard.KeyP, keyboard.KeyEqual,
 	keyboard.Keycode(0), keyboard.KeyLeft, keyboard.KeyDown, keyboard.KeyUp, keyboard.KeyRight, keyboard.KeySemicolon, keyboard.KeyQuote,
 	keyboard.Keycode(0), keyboard.KeyN, keyboard.KeyM, keyboard.KeyComma, keyboard.KeyPeriod, keyboard.KeySlash, keyboard.KeyRightShift,
