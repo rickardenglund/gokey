@@ -2,11 +2,13 @@ package main
 
 import (
 	"gokey/keyboard"
+	"gokey/keyboard/echo"
 	"gokey/keyboard/keymapv1"
-	//"gokey/keyboard/echo"
 	"machine"
 	"time"
 )
+
+const onlyEcho = false
 
 func main() {
 	l := machine.LED
@@ -44,8 +46,12 @@ func main() {
 		machine.GP14,
 	)
 
-	kb := keyboard.New(l, keymapv1.New())
-	//kb := echo.New()
+	var kb keyboard.Keyboard
+	if onlyEcho {
+		kb = echo.New()
+	} else {
+		kb = keyboard.New(l, keymapv1.New())
+	}
 	for {
 		pressed := map[keyboard.Coordinates]bool{}
 		for r := range rows {
@@ -65,6 +71,7 @@ func main() {
 }
 
 func enableRow(rows []machine.Pin, r int) {
+	time.Sleep(time.Millisecond)
 	for i := range rows {
 		if r == i {
 			rows[i].High()
